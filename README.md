@@ -1,6 +1,7 @@
 # Тестовая задача
 
 Привет! Чтоб запустить бота тебе надо скачать python з офф.сайта
+
 Дальше пропиши в консоль команду:
 ```bash
 pip install aiogram motor
@@ -8,11 +9,15 @@ pip install aiogram motor
 
 Хм... Давай тепер отредактируем конфиг
 Запусти config.json
-Открил? Молодец! 
+
+Открил? Молодец!
+
 Тепер создай линк на датабазу MongoDB, гайд:
 https://youtube.com/watch?v=UqhM2we3o-s
+
 И также бота телеграм :
 https://boto.agency/blog/kak-polychit-api-token-telegram/
+
 Тепер датабаза должна виглядить типо так:
 ```json
 {
