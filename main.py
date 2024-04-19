@@ -7,11 +7,17 @@ import motor.motor_asyncio
 from aiogram.types import WebAppInfo
 import json
 
-client = motor.motor_asyncio.AsyncIOMotorClient('mongodb+srv://gdevanezus:K2zqV1R1fqWwJGIA@cluster0.zqwmzbt.mongodb.net/?retryWrites=true&w=majority')
+with open('config.json') as f:
+    config_data = json.load(f)
+
+mongodb_url = config_data['url']
+telegram_token = config_data['token']
+
+client = motor.motor_asyncio.AsyncIOMotorClient(mongodb_url)
 db = client['testiki']
 
 
-TOKEN = '7178622994:AAExkLidcT37FJsXKv3EpA1xJtQwZG3mc4c'
+TOKEN = telegram_token
 
 logging.basicConfig(level=logging.INFO)
 
@@ -121,7 +127,8 @@ async def books(callback: types.CallbackQuery):
                 if book:
                     if int(book['id']) == int(bookid):
                         await callback.message.delete()
-                        await callback.message.answer(f'ID книги: {book['id']}\n💬 Название: {book['title']}\n🪶 Описание: {book['description']}\n 🪧 Автор: {book['author']}\n👌 Выложил: {book['ownername']}', reply_markup=await keyboard.back('setbook'))
+                        tags = ' '.join(book.get('tags', ''))
+                        await callback.message.answer(f'ID книги: {book['id']}\n💬 Название: {book['title']}\n🪶 Описание: {book['description']}\n👀 Теги: {tags}\n 🪧 Автор: {book['author']}\n👌 Выложил: {book['ownername']}', reply_markup=await keyboard.back('setbook'))
         case "vievset":
             dbdata = await db['books'].find_one({"_id": 1})
             bookid = parts[1]
@@ -129,7 +136,8 @@ async def books(callback: types.CallbackQuery):
                 if book:
                     if int(book['ownerid']) == int(callback.from_user.id):
                         await callback.message.delete()
-                        await callback.message.answer(f'ID книги: {book['id']}\n💬 Название: {book['title']}\n🪶 Описание: {book['description']}\n👀 Теги: {book['tags']}\n 🪧 Автор: {book['author']}', reply_markup=await keyboard.usbtns(book['id']))
+                        tags = ' '.join(book.get('tags', ''))
+                        await callback.message.answer(f'ID книги: {book['id']}\n💬 Название: {book['title']}\n🪶 Описание: {book['description']}\n👀 Теги: {tags}\n 🪧 Автор: {book['author']}', reply_markup=await keyboard.usbtns(book['id']))
         case "delete":
             dbdata = await db['books'].find_one({"_id": 1})
             bookid = parts[1]
